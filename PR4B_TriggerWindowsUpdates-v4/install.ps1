@@ -73,6 +73,15 @@ if (-not $MyInvocation.MyCommand.Path) {
     $localScriptPath = Join-Path -Path $env:TEMP -ChildPath "install.ps1"
     Invoke-WebRequest -Uri "https://raw.githubusercontent.com/aollivierre/WinUpdates/main/PR4B_TriggerWindowsUpdates-v4/install.ps1" -OutFile $localScriptPath
 
+    # Define the path to save the config.psd1 locally
+    $configFilePath = Join-Path -Path $env:TEMP -ChildPath "config.psd1"
+    
+    # Download the config.psd1 file
+    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/aollivierre/WinUpdates/main/PR4B_TriggerWindowsUpdates-v4/config.psd1" -OutFile $configFilePath
+    
+    # Update the config path to point to the downloaded file
+    $configPath = $configFilePath
+
     # Execute the script locally
     & $localScriptPath
 
