@@ -65,6 +65,10 @@ $PsExec64Path = Join-Path -Path $privateFolderPath -ChildPath "PsExec64.exe"
 if (-not $MyInvocation.MyCommand.Path) {
     Write-Host "Running as web script, downloading and executing locally..."
 
+
+    # Ensure TLS 1.2 is used for the download
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
     # Download the script to a local machine
     $localScriptPath = Join-Path -Path $env:TEMP -ChildPath "install.ps1"
     Invoke-WebRequest -Uri "https://raw.githubusercontent.com/aollivierre/WinUpdates/main/PR4B_TriggerWindowsUpdates-v4/install.ps1" -OutFile $localScriptPath
@@ -309,6 +313,10 @@ try {
     if (-not $MyInvocation.MyCommand.Path) {
         Write-Host "Running as web script, downloading and executing locally..."
 
+
+        # Ensure TLS 1.2 is used for the download
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
         # Download the script to a local machine
         $localScriptPath = Join-Path -Path $env:TEMP -ChildPath "install.ps1"
         Invoke-WebRequest -Uri "https://raw.githubusercontent.com/aollivierre/WinUpdates/main/PR4B_TriggerWindowsUpdates-v4/install.ps1" -OutFile $localScriptPath
@@ -360,16 +368,38 @@ try {
 
 
 
-    # # Define the parameters using a hashtable
+    # Define the location for the config file
+    if (-not $MyInvocation.MyCommand.Path) {
+        Write-Host "Running as web script, downloading config.psd1 file..."
+
+        # Define the path to save the config.psd1 locally
+        $configFilePath = Join-Path -Path $env:TEMP -ChildPath "config.psd1"
+
+
+        # Ensure TLS 1.2 is used for the download
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+        # Download the config.psd1 file
+        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/aollivierre/WinUpdates/main/PR4B_TriggerWindowsUpdates-v4/config.psd1" -OutFile $configFilePath
+
+        # Update the config path to point to the downloaded file
+        $configPath = $configFilePath
+    }
+    else {
+        # If running in a regular context, use the actual path of the script
+        $configPath = "$PSScriptRoot\config.psd1"
+    }
+
+    # Define the parameters using a hashtable
     $taskParams = @{
-        ConfigPath = "$PSScriptroot\config.psd1"
+        ConfigPath = $configPath
         FileName   = "HiddenScript.vbs"
-        Scriptroot = "$PSScriptroot"
+        Scriptroot = "$PSScriptRoot"
     }
 
     # Call the function with the splatted parameters
     CreateAndRegisterScheduledTask @taskParams
-    
+
 
 
     # Wait-Debugger
