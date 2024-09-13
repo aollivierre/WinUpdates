@@ -65,20 +65,34 @@ $PsExec64Path = Join-Path -Path $privateFolderPath -ChildPath "PsExec64.exe"
 if (-not $MyInvocation.MyCommand.Path) {
     Write-Host "Running as web script, downloading and executing locally..."
 
-
     # Ensure TLS 1.2 is used for the download
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-    # Download the script to a local machine
-    $localScriptPath = Join-Path -Path $env:TEMP -ChildPath "install.ps1"
+    # Create a time-stamped folder in the temp directory
+    $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
+    $downloadFolder = Join-Path -Path $env:TEMP -ChildPath "TriggerWindowsUpdates_$timestamp"
+
+    # Ensure the folder exists
+    if (-not (Test-Path -Path $downloadFolder)) {
+        New-Item -Path $downloadFolder -ItemType Directory | Out-Null
+    }
+
+    # Download the script to the time-stamped folder
+    $localScriptPath = Join-Path -Path $downloadFolder -ChildPath "install.ps1"
     Invoke-WebRequest -Uri "https://raw.githubusercontent.com/aollivierre/WinUpdates/main/PR4B_TriggerWindowsUpdates-v4/install.ps1" -OutFile $localScriptPath
 
-    # Define the path to save the config.psd1 locally
-    $configFilePath = Join-Path -Path $env:TEMP -ChildPath "config.psd1"
-    
-    # Download the config.psd1 file
+    Write-Host "Downloading config.psd1 file..."
+
+    # Download the config.psd1 file to the time-stamped folder
+    $configFilePath = Join-Path -Path $downloadFolder -ChildPath "config.psd1"
     Invoke-WebRequest -Uri "https://raw.githubusercontent.com/aollivierre/WinUpdates/main/PR4B_TriggerWindowsUpdates-v4/config.psd1" -OutFile $configFilePath
-    
+
+    Write-Host "Downloading Remediation.ps1 file..."
+
+    # Download the Remediation.ps1 file to the time-stamped folder
+    $remediationFilePath = Join-Path -Path $downloadFolder -ChildPath "Remediation.ps1"
+    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/aollivierre/WinUpdates/main/PR4B_TriggerWindowsUpdates-v4/Remediation.ps1" -OutFile $remediationFilePath
+
     # Update the config path to point to the downloaded file
     $configPath = $configFilePath
 
@@ -318,21 +332,43 @@ try {
     $privateFolderPath = Join-Path -Path $tempFolder -ChildPath "private"
     $PsExec64Path = Join-Path -Path $privateFolderPath -ChildPath "PsExec64.exe"
 
-    # Check if running as a web script (no $MyInvocation.MyCommand.Path)
     if (-not $MyInvocation.MyCommand.Path) {
         Write-Host "Running as web script, downloading and executing locally..."
-
-
+    
         # Ensure TLS 1.2 is used for the download
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-
-        # Download the script to a local machine
-        $localScriptPath = Join-Path -Path $env:TEMP -ChildPath "install.ps1"
+    
+        # Create a time-stamped folder in the temp directory
+        $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
+        $downloadFolder = Join-Path -Path $env:TEMP -ChildPath "TriggerWindowsUpdates_$timestamp"
+    
+        # Ensure the folder exists
+        if (-not (Test-Path -Path $downloadFolder)) {
+            New-Item -Path $downloadFolder -ItemType Directory | Out-Null
+        }
+    
+        # Download the script to the time-stamped folder
+        $localScriptPath = Join-Path -Path $downloadFolder -ChildPath "install.ps1"
         Invoke-WebRequest -Uri "https://raw.githubusercontent.com/aollivierre/WinUpdates/main/PR4B_TriggerWindowsUpdates-v4/install.ps1" -OutFile $localScriptPath
-
+    
+        Write-Host "Downloading config.psd1 file..."
+    
+        # Download the config.psd1 file to the time-stamped folder
+        $configFilePath = Join-Path -Path $downloadFolder -ChildPath "config.psd1"
+        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/aollivierre/WinUpdates/main/PR4B_TriggerWindowsUpdates-v4/config.psd1" -OutFile $configFilePath
+    
+        Write-Host "Downloading Remediation.ps1 file..."
+    
+        # Download the Remediation.ps1 file to the time-stamped folder
+        $remediationFilePath = Join-Path -Path $downloadFolder -ChildPath "Remediation.ps1"
+        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/aollivierre/WinUpdates/main/PR4B_TriggerWindowsUpdates-v4/Remediation.ps1" -OutFile $remediationFilePath
+    
+        # Update the config path to point to the downloaded file
+        $configPath = $configFilePath
+    
         # Execute the script locally
         & $localScriptPath
-
+    
         Exit # Exit after running the script locally
     }
     else {
@@ -377,31 +413,32 @@ try {
 
 
 
-    # Define the location for the config file
-    if (-not $MyInvocation.MyCommand.Path) {
-        Write-Host "Running as web script, downloading config.psd1 file..."
+    # # Define the location for the config file
+    # if (-not $MyInvocation.MyCommand.Path) {
+    #     Write-Host "Running as web script, downloading config.psd1 file..."
 
-        # Define the path to save the config.psd1 locally
-        $configFilePath = Join-Path -Path $env:TEMP -ChildPath "config.psd1"
+    #     # Define the path to save the config.psd1 locally
+    #     $configFilePath = Join-Path -Path $env:TEMP -ChildPath "config.psd1"
 
 
-        # Ensure TLS 1.2 is used for the download
-        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    #     # Ensure TLS 1.2 is used for the download
+    #     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-        # Download the config.psd1 file
-        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/aollivierre/WinUpdates/main/PR4B_TriggerWindowsUpdates-v4/config.psd1" -OutFile $configFilePath
+    #     # Download the config.psd1 file
+    #     Invoke-WebRequest -Uri "https://raw.githubusercontent.com/aollivierre/WinUpdates/main/PR4B_TriggerWindowsUpdates-v4/config.psd1" -OutFile $configFilePath
 
-        # Update the config path to point to the downloaded file
-        $configPath = $configFilePath
-    }
-    else {
-        # If running in a regular context, use the actual path of the script
-        $configPath = "$PSScriptRoot\config.psd1"
-    }
+    #     # Update the config path to point to the downloaded file
+    #     $configPath = $configFilePath
+    # }
+    # else {
+    #     # If running in a regular context, use the actual path of the script
+    #     $configPath = "$PSScriptRoot\config.psd1"
+    # }
 
     # Define the parameters using a hashtable
     $taskParams = @{
-        ConfigPath = $configPath
+        # ConfigPath = $configPath
+        ConfigPath = "$PSScriptRoot\config.psd1"
         FileName   = "HiddenScript.vbs"
         Scriptroot = "$PSScriptRoot"
     }
