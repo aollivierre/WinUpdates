@@ -187,29 +187,43 @@ try {
 
 
 
-    
     # Create a time-stamped folder in the temp directory
-    # $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
-    # $tempFolder = [System.IO.Path]::Combine($env:TEMP, "Ensure-RunningAsSystem_$timestamp")
+    $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
+    $tempFolder = [System.IO.Path]::Combine($env:TEMP, "Ensure-RunningAsSystem_$timestamp")
 
-    # # Ensure the temp folder exists
-    # if (-not (Test-Path -Path $tempFolder)) {
-    #     New-Item -Path $tempFolder -ItemType Directory | Out-Null
-    # }
+    # Ensure the temp folder exists
+    if (-not (Test-Path -Path $tempFolder)) {
+        New-Item -Path $tempFolder -ItemType Directory | Out-Null
+    }
 
-    # # Use the time-stamped temp folder for your paths
-    # $privateFolderPath = Join-Path -Path $tempFolder -ChildPath "private"
-    # $PsExec64Path = Join-Path -Path $privateFolderPath -ChildPath "PsExec64.exe"
-    # $ScriptToRunAsSystem = $MyInvocation.MyCommand.Path
+    # Use the time-stamped temp folder for your paths
+    $privateFolderPath = Join-Path -Path $tempFolder -ChildPath "private"
+    $PsExec64Path = Join-Path -Path $privateFolderPath -ChildPath "PsExec64.exe"
 
-    # # Ensure the folder exists before continuing
-    # if (-not (Test-Path -Path $privateFolderPath)) {
-    #     New-Item -Path $privateFolderPath -ItemType Directory | Out-Null
-    # }
+    # If running as a web script, we won't have $MyInvocation.MyCommand.Path, so fallback to manual definition
+    if (-not $MyInvocation.MyCommand.Path) {
+        # Manually specify the script to run or use a default path, such as copying the script to the temp folder
+        $ScriptToRunAsSystem = Join-Path -Path $tempFolder -ChildPath "CurrentScript.ps1"
 
-    # # Call the function using the new paths
-    # Ensure-RunningAsSystem -PsExec64Path $PsExec64Path -ScriptPath $ScriptToRunAsSystem -TargetFolder $privateFolderPath
+        # If needed, write the current script content to this file in case of web context
+        $scriptContent = Get-Content -Raw -Path $PSCommandPath
+        Set-Content -Path $ScriptToRunAsSystem -Value $scriptContent
+    }
+    else {
+        # If running in a regular context, use the actual path
+        $ScriptToRunAsSystem = $MyInvocation.MyCommand.Path
+    }
 
+    # Ensure the folder exists before continuing
+    if (-not (Test-Path -Path $privateFolderPath)) {
+        New-Item -Path $privateFolderPath -ItemType Directory | Out-Null
+    }
+
+    # Call the function using the new paths
+    Ensure-RunningAsSystem -PsExec64Path $PsExec64Path -ScriptPath $ScriptToRunAsSystem -TargetFolder $privateFolderPath
+
+
+    Wait-Debugger
 
 
     # ################################################################################################################################
