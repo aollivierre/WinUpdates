@@ -77,7 +77,7 @@ if (-not (Test-Path -Path $privateFolderPath)) {
 # Conditional check for SimulatingIntune switch
 if ($SimulatingIntune) {
     # If not running as a web script, run as SYSTEM using PsExec
-    Write-EnhancedLog -Message "Simulating Intune environment. Running script as SYSTEM..." -Level "INFO"
+    Write-Host "Simulating Intune environment. Running script as SYSTEM..."
 
     Write-Host "Running as SYSTEM..."
 
@@ -93,7 +93,7 @@ if ($SimulatingIntune) {
     Ensure-RunningAsSystem @EnsureRunningAsSystemParams
 }
 else {
-    Write-EnhancedLog -Message "Not simulating Intune. Skipping SYSTEM execution." -Level "INFO"
+    Write-Host "Not simulating Intune. Skipping SYSTEM execution."
 }
 
 
