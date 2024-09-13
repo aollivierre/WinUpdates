@@ -1,5 +1,3 @@
-Here’s your formatted version based on the example you provided:
-
 # Setup Instructions
 
 ### Call using PowerShell:
