@@ -1,3 +1,53 @@
+# # # Example usage
+# # $privateFolderPath = Join-Path -Path $PSScriptRoot -ChildPath "private"
+# # $PsExec64Path = Join-Path -Path $privateFolderPath -ChildPath "PsExec64.exe"
+# # $ScriptToRunAsSystem = $MyInvocation.MyCommand.Path
+
+# # Ensure-RunningAsSystem -PsExec64Path $PsExec64Path -ScriptPath $ScriptToRunAsSystem -TargetFolder $privateFolderPath
+
+
+# # Create a time-stamped folder in the temp directory
+# $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
+# $tempFolder = [System.IO.Path]::Combine($env:TEMP, "Ensure-RunningAsSystem_$timestamp")
+
+# # Ensure the temp folder exists
+# if (-not (Test-Path -Path $tempFolder)) {
+#     New-Item -Path $tempFolder -ItemType Directory | Out-Null
+# }
+
+# # Use the time-stamped temp folder for your paths
+# $privateFolderPath = Join-Path -Path $tempFolder -ChildPath "private"
+# $PsExec64Path = Join-Path -Path $privateFolderPath -ChildPath "PsExec64.exe"
+
+# # If running as a web script, we won't have $MyInvocation.MyCommand.Path, so fallback to manual definition first download the script to a local machine and then execute it.
+# if (-not $MyInvocation.MyCommand.Path) {
+
+#     Invoke-WebRequest -Uri "https://raw.githubusercontent.com/aollivierre/WinUpdates/main/PR4B_TriggerWindowsUpdates-v4/install.ps1" -OutFile "$env:TEMP\install.ps1"
+#     & "$env:TEMP\install.ps1"
+
+# }
+# else {
+#     # If running in a regular context, use the actual path
+#     $ScriptToRunAsSystem = $MyInvocation.MyCommand.Path
+# }
+
+# # Ensure the folder exists before continuing
+# if (-not (Test-Path -Path $privateFolderPath)) {
+#     New-Item -Path $privateFolderPath -ItemType Directory | Out-Null
+# }
+
+# # Call the function using the new paths
+# $EnsureRunningAsSystemParams = @{
+#     PsExec64Path = $PsExec64Path
+#     ScriptPath   = $ScriptToRunAsSystem
+#     TargetFolder = $privateFolderPath
+# }
+    
+# Ensure-RunningAsSystem @EnsureRunningAsSystemParams
+
+
+
+
 # Create a time-stamped folder in the temp directory
 $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
 $tempFolder = [System.IO.Path]::Combine($env:TEMP, "Ensure-RunningAsSystem_$timestamp")
@@ -11,29 +61,45 @@ if (-not (Test-Path -Path $tempFolder)) {
 $privateFolderPath = Join-Path -Path $tempFolder -ChildPath "private"
 $PsExec64Path = Join-Path -Path $privateFolderPath -ChildPath "PsExec64.exe"
 
-# If running as a web script, we won't have $MyInvocation.MyCommand.Path, so fallback to manual definition
+# Check if running as a web script (no $MyInvocation.MyCommand.Path)
 if (-not $MyInvocation.MyCommand.Path) {
-    # Manually specify the script to run or use a default path, such as copying the script to the temp folder
-    $ScriptToRunAsSystem = Join-Path -Path $tempFolder -ChildPath "CurrentScript.ps1"
+    Write-Host "Running as web script, downloading and executing locally..."
 
-    # If needed, write the current script content to this file in case of web context
-    $scriptContent = Get-Content -Raw -Path $PSCommandPath
-    Set-Content -Path $ScriptToRunAsSystem -Value $scriptContent
+    # Download the script to a local machine
+    $localScriptPath = Join-Path -Path $env:TEMP -ChildPath "install.ps1"
+    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/aollivierre/WinUpdates/main/PR4B_TriggerWindowsUpdates-v4/install.ps1" -OutFile $localScriptPath
+
+    # Execute the script locally
+    & $localScriptPath
+
+    Exit # Exit after running the script locally
 }
 else {
-    # If running in a regular context, use the actual path
+    # If running in a regular context, use the actual path of the script
     $ScriptToRunAsSystem = $MyInvocation.MyCommand.Path
 }
 
-# Ensure the folder exists before continuing
+# Ensure the private folder exists before continuing
 if (-not (Test-Path -Path $privateFolderPath)) {
     New-Item -Path $privateFolderPath -ItemType Directory | Out-Null
 }
 
-# Call the function using the new paths
-Ensure-RunningAsSystem -PsExec64Path $PsExec64Path -ScriptPath $ScriptToRunAsSystem -TargetFolder $privateFolderPath
+# Call the function to run as SYSTEM
+$EnsureRunningAsSystemParams = @{
+    PsExec64Path = $PsExec64Path
+    ScriptPath   = $ScriptToRunAsSystem
+    TargetFolder = $privateFolderPath
+}
 
-Wait-Debugger
+# If not running as a web script, run as SYSTEM using PsExec
+Write-Host "Running as SYSTEM..."
+Ensure-RunningAsSystem @EnsureRunningAsSystemParams
+
+
+
+
+
+# Wait-Debugger
 
 
 
@@ -226,7 +292,6 @@ try {
     # Ensure-RunningAsSystem -PsExec64Path $PsExec64Path -ScriptPath $ScriptToRunAsSystem -TargetFolder $privateFolderPath
 
 
-
     # Create a time-stamped folder in the temp directory
     $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
     $tempFolder = [System.IO.Path]::Combine($env:TEMP, "Ensure-RunningAsSystem_$timestamp")
@@ -240,27 +305,39 @@ try {
     $privateFolderPath = Join-Path -Path $tempFolder -ChildPath "private"
     $PsExec64Path = Join-Path -Path $privateFolderPath -ChildPath "PsExec64.exe"
 
-    # If running as a web script, we won't have $MyInvocation.MyCommand.Path, so fallback to manual definition
+    # Check if running as a web script (no $MyInvocation.MyCommand.Path)
     if (-not $MyInvocation.MyCommand.Path) {
-        # Manually specify the script to run or use a default path, such as copying the script to the temp folder
-        $ScriptToRunAsSystem = Join-Path -Path $tempFolder -ChildPath "CurrentScript.ps1"
+        Write-Host "Running as web script, downloading and executing locally..."
 
-        # If needed, write the current script content to this file in case of web context
-        $scriptContent = Get-Content -Raw -Path $PSCommandPath
-        Set-Content -Path $ScriptToRunAsSystem -Value $scriptContent
+        # Download the script to a local machine
+        $localScriptPath = Join-Path -Path $env:TEMP -ChildPath "install.ps1"
+        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/aollivierre/WinUpdates/main/PR4B_TriggerWindowsUpdates-v4/install.ps1" -OutFile $localScriptPath
+
+        # Execute the script locally
+        & $localScriptPath
+
+        Exit # Exit after running the script locally
     }
     else {
-        # If running in a regular context, use the actual path
+        # If running in a regular context, use the actual path of the script
         $ScriptToRunAsSystem = $MyInvocation.MyCommand.Path
     }
 
-    # Ensure the folder exists before continuing
+    # Ensure the private folder exists before continuing
     if (-not (Test-Path -Path $privateFolderPath)) {
         New-Item -Path $privateFolderPath -ItemType Directory | Out-Null
     }
 
-    # Call the function using the new paths
-    Ensure-RunningAsSystem -PsExec64Path $PsExec64Path -ScriptPath $ScriptToRunAsSystem -TargetFolder $privateFolderPath
+    # Call the function to run as SYSTEM
+    $EnsureRunningAsSystemParams = @{
+        PsExec64Path = $PsExec64Path
+        ScriptPath   = $ScriptToRunAsSystem
+        TargetFolder = $privateFolderPath
+    }
+
+    # If not running as a web script, run as SYSTEM using PsExec
+    Write-Host "Running as SYSTEM..."
+    Ensure-RunningAsSystem @EnsureRunningAsSystemParams
 
 
     Wait-Debugger
