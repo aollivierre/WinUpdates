@@ -56,9 +56,6 @@ if (-not $MyInvocation.MyCommand.Path) {
     $configFilePath = Join-Path -Path $downloadFolder -ChildPath "config.psd1"
     Invoke-WebRequest -Uri "https://raw.githubusercontent.com/aollivierre/WinUpdates/main/PR4B_TriggerWindowsUpdates-v4/config.psd1" -OutFile $configFilePath
 
-    # Update the config path to point to the downloaded file
-    $configPath = $configFilePath
-
     # Execute the script locally
     & $localScriptPath
 
