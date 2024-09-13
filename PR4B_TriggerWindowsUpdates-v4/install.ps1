@@ -119,8 +119,8 @@ $EnsureRunningAsSystemParams = @{
 }
 
 # If not running as a web script, run as SYSTEM using PsExec
-Write-Host "Running as SYSTEM..."
-Ensure-RunningAsSystem @EnsureRunningAsSystemParams
+# Write-Host "Running as SYSTEM..."
+# Ensure-RunningAsSystem @EnsureRunningAsSystemParams
 
 
 
@@ -389,8 +389,8 @@ try {
     }
 
     # If not running as a web script, run as SYSTEM using PsExec
-    Write-Host "Running as SYSTEM..."
-    Ensure-RunningAsSystem @EnsureRunningAsSystemParams
+    # Write-Host "Running as SYSTEM..."
+    # Ensure-RunningAsSystem @EnsureRunningAsSystemParams
 
 
     # Wait-Debugger
