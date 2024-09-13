@@ -72,7 +72,7 @@ $exampleText = Build-ExampleText -longUrl $longUrl -shortUrl $shortUrl
 Write-Host $exampleText
 
 # Write the example to Readme.md in the script root
-$readmePath = "$PSScriptRoot\Readme.md"
+$readmePath = "$PSScriptRoot\Readme-Install.md"
 $exampleText | Out-File -FilePath $readmePath -Encoding utf8
 
 # Inform the user

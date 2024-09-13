@@ -1,0 +1,13 @@
+{
+  "PackageName": "PR4B_TriggerWindowsUpdates",
+  "PackageUniqueGUID": "fac4661e-4c93-454b-b7a9-3b2521bef9e0",
+  "Version": 1,
+  "PackageExecutionContext": "User",
+  "LoggingDeploymentName": "PR4B_TriggerWindowsUpdatesCustomlog",
+  "ScriptMode": "Remediation",
+  "RunOnDemand": false,
+  "UsePSADT": false,
+  "TriggerType": "Daily",
+  "LogonUserId": "administrator",
+  "RepetitionInterval": "P1D"
+}
