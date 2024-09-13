@@ -340,7 +340,7 @@ try {
     Ensure-RunningAsSystem @EnsureRunningAsSystemParams
 
 
-    Wait-Debugger
+    # Wait-Debugger
 
 
     # ################################################################################################################################
