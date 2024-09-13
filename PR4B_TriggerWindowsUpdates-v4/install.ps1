@@ -46,6 +46,17 @@
 # Ensure-RunningAsSystem @EnsureRunningAsSystemParams
 
 
+# Check the current execution policy
+$currentExecutionPolicy = Get-ExecutionPolicy
+
+# If it's not already set to Bypass, change it
+if ($currentExecutionPolicy -ne 'Bypass') {
+    Write-Host "Setting Execution Policy to Bypass..."
+    Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+} else {
+    Write-Host "Execution Policy is already set to Bypass."
+}
+
 
 
 # Create a time-stamped folder in the temp directory
