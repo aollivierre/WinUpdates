@@ -1,4 +1,4 @@
-﻿# List of provider names for Windows Logs and other specified logs
+# List of provider names for Windows Logs and other specified logs
 $providerNames = @('Application', 'Security', 'Setup', 'System', 'Microsoft-Windows-WindowsUpdateClient/Operational', 'Microsoft-Windows-Bits-Client/Operational')
 
 foreach ($providerName in $providerNames) {

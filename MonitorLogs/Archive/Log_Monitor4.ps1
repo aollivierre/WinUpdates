@@ -1,4 +1,4 @@
-﻿# List of log names for Windows Logs and other specified logs
+# List of log names for Windows Logs and other specified logs
 $logNames = @('Microsoft-Windows-WindowsUpdateClient/Operational')
 # You can extend the list as needed: @('Application', 'Security', 'Setup', 'System', 'Microsoft-Windows-WindowsUpdateClient/Operational', 'Microsoft-Windows-Bits-Client/Operational')
 

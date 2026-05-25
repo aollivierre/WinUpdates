@@ -1,4 +1,4 @@
-﻿# Event Tracing for Windows (ETW) Providers: Some providers, known as Event Tracing for Windows (ETW) providers, can generate events that are not viewable in the Event Viewer GUI but can be accessed programmatically. If 'Microsoft-Windows-WindowsUpdateClient' is an ETW provider, this could explain the discrepancy.
+# Event Tracing for Windows (ETW) Providers: Some providers, known as Event Tracing for Windows (ETW) providers, can generate events that are not viewable in the Event Viewer GUI but can be accessed programmatically. If 'Microsoft-Windows-WindowsUpdateClient' is an ETW provider, this could explain the discrepancy.
 
 
 # Get a list of all provider names that contain 'BitLocker' in their name

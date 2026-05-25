@@ -1,4 +1,4 @@
-﻿# Specify the provider name
+# Specify the provider name
 # $providerName = 'Microsoft-Windows-DNS-Server-Service'
 # $providerName = @('Microsoft-Windows-WindowsUpdateClient/Operational')
 # $providerName = 'Microsoft-Windows-WindowsUpdateClient/Operational'

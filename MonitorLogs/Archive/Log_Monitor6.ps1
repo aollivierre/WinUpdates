@@ -1,4 +1,4 @@
-﻿# Specify the provider name
+# Specify the provider name
 $providerName = 'Microsoft-Windows-WindowsUpdateClient'
 
 # Initialize the last event time

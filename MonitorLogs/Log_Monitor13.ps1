@@ -1,4 +1,4 @@
-﻿# Check if the script is running with administrative privileges
+# Check if the script is running with administrative privileges
 function IsAdmin {
     $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
     $principal = [Security.Principal.WindowsPrincipal] $identity

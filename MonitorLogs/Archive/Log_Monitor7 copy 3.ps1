@@ -1,4 +1,4 @@
-﻿# Function to monitor a single provider
+# Function to monitor a single provider
 function Monitor-Provider {
     param ($providerName)
 

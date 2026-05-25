@@ -1,4 +1,4 @@
-﻿# Check if the user has administrative privileges
+# Check if the user has administrative privileges
 if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
     Write-Error "You need to run this script as an Administrator!"
     exit

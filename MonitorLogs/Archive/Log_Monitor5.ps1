@@ -1,4 +1,4 @@
-﻿$logNames = @('Microsoft-Windows-WindowsUpdateClient/Operational')
+$logNames = @('Microsoft-Windows-WindowsUpdateClient/Operational')
 # ... extend the list as needed ...
 
 $action = {
