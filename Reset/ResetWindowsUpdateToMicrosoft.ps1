@@ -1,4 +1,4 @@
-﻿# Function to print colored messages
+# Function to print colored messages
 function Print-ColorMessage {
     param (
         [Parameter(Mandatory=$true)]

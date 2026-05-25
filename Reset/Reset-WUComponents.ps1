@@ -1,4 +1,4 @@
-﻿# Run as Administrator
+# Run as Administrator
 Stop-Service -Name wuauserv -Force
 Stop-Service -Name cryptSvc -Force
 Stop-Service -Name bits -Force

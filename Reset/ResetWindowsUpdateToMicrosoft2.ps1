@@ -1,4 +1,4 @@
-﻿function Write-ColoredLog {
+function Write-ColoredLog {
     param (
         [Parameter(Mandatory=$true)]
         [string]$Message,
